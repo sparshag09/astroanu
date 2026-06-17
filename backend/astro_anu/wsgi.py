@@ -1,0 +1,9 @@
+"""
+WSGI config for astro_anu project.
+"""
+
+import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'astro_anu.settings')
+application = get_wsgi_application()
