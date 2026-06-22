@@ -1,21 +1,36 @@
-##!/usr/bin/env bash
-#set -o errexit
-
-#pip install -r requirements.txt
-#python manage.py collectstatic --no-input
-#python manage.py migrate
 #!/usr/bin/env bash
 set -o errexit
 
-# Install dependencies
+echo "Installing dependencies..."
 pip install -r requirements.txt
 
-# Create superuser ONLY if the environment variable is set
-# This prevents errors on subsequent builds if you remove the env var later
-if [[ -n "$DJANGO_SUPERUSER_USERNAME" ]]; then
-  python manage.py createsuperuser --no-input
-fi
-
-# Migrate database and collect static files
+echo "Running migrations..."
 python manage.py migrate
-python manage.py collectstatic --no-input   
+
+echo "Collecting static files..."
+python manage.py collectstatic --no-input
+
+echo "Creating superuser if environment variables are present..."
+python manage.py shell << END
+import os
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+username = os.environ.get("DJANGO_SUPERUSER_USERNAME")
+email = os.environ.get("DJANGO_SUPERUSER_EMAIL")
+password = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
+
+if username and email and password:
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password
+        )
+        print("Superuser created successfully.")
+    else:
+        print("Superuser already exists. Skipping creation.")
+else:
+    print("Superuser environment variables not set. Skipping.")
+END
