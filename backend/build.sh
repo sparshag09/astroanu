@@ -10,6 +10,11 @@ python manage.py migrate
 echo "Collecting static files..."
 python manage.py collectstatic --no-input
 
+echo "Checking superuser environment variables..."
+echo "DJANGO_SUPERUSER_USERNAME set? ${DJANGO_SUPERUSER_USERNAME:+yes}"
+echo "DJANGO_SUPERUSER_EMAIL set? ${DJANGO_SUPERUSER_EMAIL:+yes}"
+echo "DJANGO_SUPERUSER_PASSWORD set? ${DJANGO_SUPERUSER_PASSWORD:+yes}"
+
 echo "Creating superuser if environment variables are present..."
 python manage.py shell << END
 import os
