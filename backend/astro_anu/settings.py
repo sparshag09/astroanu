@@ -189,15 +189,24 @@ def env_list(key, default=""):
     ]
 
 
-CORS_ALLOWED_ORIGINS = env_list(
-    "FRONTEND_URL",
-    "http://localhost:5173,http://localhost:3000,https://astroanu.com,https://www.astroanu.com"
-)
+# -------------------------------------------------------
+# CORS / CSRF
+# -------------------------------------------------------
 
-CSRF_TRUSTED_ORIGINS = env_list(
-    "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:5173,http://localhost:3000,https://astroanu.com,https://www.astroanu.com,https://astroanu.onrender.com"
-)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://astroanu.com",
+    "https://www.astroanu.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://astroanu.com",
+    "https://www.astroanu.com",
+    "https://astroanu.onrender.com",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -212,7 +221,6 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
-
 # Email
 EMAIL_BACKEND = os.getenv(
     "EMAIL_BACKEND",
