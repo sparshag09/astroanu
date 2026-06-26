@@ -51,11 +51,11 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
+     # CORS should be high in middleware
+    "corsheaders.middleware.CorsMiddleware",
+    
     # WhiteNoise for serving static files on Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
-    # CORS should be high in middleware
-    "corsheaders.middleware.CorsMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -177,11 +177,27 @@ SIMPLE_JWT = {
 }
 
 
-# CORS
-CORS_ALLOWED_ORIGINS = os.getenv(
+# -------------------------------------------------------
+# CORS / CSRF
+# -------------------------------------------------------
+
+def env_list(key, default=""):
+    return [
+        item.strip()
+        for item in os.getenv(key, default).split(",")
+        if item.strip()
+    ]
+
+
+CORS_ALLOWED_ORIGINS = env_list(
     "FRONTEND_URL",
-    "http://localhost:5173,http://localhost:3000"
-).split(",")
+    "http://localhost:5173,http://localhost:3000,https://astroanu.com,https://www.astroanu.com"
+)
+
+CSRF_TRUSTED_ORIGINS = env_list(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://localhost:5173,http://localhost:3000,https://astroanu.com,https://www.astroanu.com,https://astroanu.onrender.com"
+)
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -196,14 +212,6 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
-
-
-# CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:5173,http://localhost:3000"
-).split(",")
-
 
 # Email
 EMAIL_BACKEND = os.getenv(
